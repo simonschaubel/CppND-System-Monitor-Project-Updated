@@ -35,7 +35,7 @@ void NCursesDisplay::DisplaySystem(System& system, WINDOW* window) {
   mvwprintw(window, ++row, 2, "CPU: ");
   wattron(window, COLOR_PAIR(1));
   mvwprintw(window, row, 10, "");
-  wprintw(window, ProgressBar(system.Cpu().Utilization()).c_str());
+  wprintw(window, ProgressBar(system.CpuUtilization()).c_str());
   wattroff(window, COLOR_PAIR(1));
   mvwprintw(window, ++row, 2, "Memory: ");
   wattron(window, COLOR_PAIR(1));
@@ -92,8 +92,9 @@ void NCursesDisplay::Display(System& system, int n) {
   WINDOW* system_window = newwin(9, x_max - 1, 0, 0);
   WINDOW* process_window =
       newwin(3 + n, x_max - 1, system_window->_maxy + 1, 0);
-
+  
   while (1) {
+    system.Update();
     init_pair(1, COLOR_BLUE, COLOR_BLACK);
     init_pair(2, COLOR_GREEN, COLOR_BLACK);
     box(system_window, 0, 0);
@@ -104,6 +105,7 @@ void NCursesDisplay::Display(System& system, int n) {
     wrefresh(process_window);
     refresh();
     std::this_thread::sleep_for(std::chrono::seconds(1));
+    
   }
   endwin();
 }
