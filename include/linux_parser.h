@@ -6,10 +6,11 @@
 #include <string>
 
 #include "processor.h"
+#include "process.h"
 
 class LinuxParser{
   public:
-   void ParsesAll();
+   void ParseAll();
    int TotalProcesses();
    int RunningProcesses();
    long UpTime();
@@ -17,8 +18,8 @@ class LinuxParser{
    float MemoryUtilization();
    std::string Kernel();
    std::string OperatingSystem();
-   std::vector<int> Pids();
-
+   std::vector<Process>& Processes();
+   
   private:
    // Methods and Functions
    void ParseOsRelease();
@@ -26,17 +27,27 @@ class LinuxParser{
    void ParseProcMeminfo();
    void ParseProcStat();
    void ParseUpTime();
+   void ParseUid();
+   void ParsePids();
+   void ParseProcesses();
+   void ParsePStatus(Process& process);
+   void ParsePStat(Process& process);
+   void ParsePCmdLine(Process& process);
 
    // Variables
-   int totalProcesses;
-   int runningProcesses;
-   long upTime;
-   float totalMemory;
-   float freeMemory; 
-   std::string operatingSystem;
-   std::string linuxKernel;
-   Processor processor;
-   Processor prev_processor = Processor();
+   int totalProcesses_;
+   int runningProcesses_;
+   long upTime_;
+   float totalMemory_;
+   float freeMemory_; 
+   std::string operatingSystem_;
+   std::string linuxKernel_;
+   Processor processor_;
+   Processor prev_processor_ = Processor();
+   std::map<int, std::string> uids_;
+   std::vector<Process> processes_;
+   std::vector<Process> prev_processes_;
+   std::vector<int> pids_;
 
    // Paths
    const std::string kProcDirectory{"/proc/"};
@@ -62,5 +73,7 @@ class LinuxParser{
    std::string User(int pid);
    long int UpTime(int pid);
 };
+
+enum ProcessStatus{ putime = 14, pstime = 15, pcutime = 16, pcstime = 17, pstarttime = 21 };
 
 #endif

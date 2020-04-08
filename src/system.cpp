@@ -4,15 +4,11 @@
 #include <string>
 #include <vector>
 
-#include "process.h"
 #include "system.h"
 
 
-void System::Update(){ linux_parser_.ParsesAll(); }
-
-// TODO: Return a container composed of the system's processes
-std::vector<Process>& System::Processes() { return processes_; }
-
+void System::Update(){ linux_parser_.ParseAll(); }
+std::vector<Process>& System::Processes() { return linux_parser_.Processes(); }
 std::string System::Kernel() { return linux_parser_.Kernel(); }
 float System::MemoryUtilization() { return linux_parser_.MemoryUtilization(); }
 float System::CpuUtilization() { return linux_parser_.CpuUtilization(); }
